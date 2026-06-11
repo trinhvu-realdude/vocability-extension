@@ -66,8 +66,12 @@ export default function SaveForm({
                                 backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236c757d' d='M6 8L1 3h10z'/%3E%3C/svg%3E")`,
                                 backgroundRepeat: "no-repeat",
                                 backgroundPosition: "right 10px center",
-                                paddingRight: 28
+                                paddingRight: 28,
+                                color: collectionId === "" ? "#6c757d" : undefined
                             }}>
+                            <option value="" disabled style={{ background: "#ffffff", color: "#6c757d" }}>
+                                Collection
+                            </option>
                             {myCollections.length > 0 && (
                                 <optgroup label="My Collections">
                                     {myCollections.map((c) => (
@@ -81,7 +85,7 @@ export default function SaveForm({
                                 <optgroup label="Shared with Me">
                                     {sharedCollections.map((c) => (
                                         <option key={c.id} value={c.id} style={{ background: "#ffffff" }}>
-                                            {c.name} (Editor)
+                                            {c.name}
                                         </option>
                                     ))}
                                 </optgroup>
@@ -191,13 +195,13 @@ export default function SaveForm({
             {/* Save button */}
             <div style={{ marginTop: 20, marginBottom: 10 }}>
                 <button
-                    disabled={isSaving || (!defText.trim())}
+                    disabled={isSaving || (!defText.trim()) || (!showNewColl && !collectionId)}
                     onClick={handleSave}
                     style={{
                         width: "100%",
                         padding: "11px 16px",
                         background:
-                            isSaving || !defText.trim()
+                            isSaving || !defText.trim() || (!showNewColl && !collectionId)
                                 ? "rgba(221, 87, 70, 0.3)"
                                 : `linear-gradient(135deg, ${C.primary}, ${C.primaryDark})`,
                         border: "none",
@@ -205,7 +209,7 @@ export default function SaveForm({
                         color: C.white,
                         fontSize: 16,
                         fontWeight: 700,
-                        cursor: isSaving || !defText.trim() ? "not-allowed" : "pointer",
+                        cursor: isSaving || !defText.trim() || (!showNewColl && !collectionId) ? "not-allowed" : "pointer",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",

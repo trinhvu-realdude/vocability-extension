@@ -35,6 +35,7 @@ function WordPanel({ word, onClose, onToast }: WordPanelProps) {
     const [newCollName, setNewCollName] = useState("")
     const [showNewColl, setShowNewColl] = useState(false)
     const [toast, setToast] = useState<{ msg: string; ok: boolean } | null>(null)
+    const [isHover, setIsHover] = useState(false)
 
     const defRef = useRef<HTMLTextAreaElement>(null)
 
@@ -77,7 +78,6 @@ function WordPanel({ word, onClose, onToast }: WordPanelProps) {
             // Collections
             const colls: ExtCollection[] = collRes?.data ?? []
             setCollections(colls)
-            if (colls.length > 0) setCollectionId(colls[0].id)
             if (colls.length === 0) setShowNewColl(true)
 
             // Definition
@@ -136,6 +136,8 @@ function WordPanel({ word, onClose, onToast }: WordPanelProps) {
                 targetCollectionId = res.data.id
                 setCollections([res.data])
                 setCollectionId(res.data.id)
+            } else if (!targetCollectionId) {
+                throw new Error("Please select a collection")
             }
 
             const saveRes = await chrome.runtime.sendMessage({
@@ -195,10 +197,12 @@ function WordPanel({ word, onClose, onToast }: WordPanelProps) {
                 </div>
                 <button
                     onClick={onClose}
+                    onMouseEnter={() => setIsHover(true)}
+                    onMouseLeave={() => setIsHover(false)}
                     style={{
                         width: 30,
                         height: 30,
-                        borderRadius: "50%",
+                        borderRadius: "10px",
                         border: `1px solid ${C.borderLight}`,
                         background: C.bgCard,
                         color: C.textMuted,
@@ -207,8 +211,9 @@ function WordPanel({ word, onClose, onToast }: WordPanelProps) {
                         alignItems: "center",
                         justifyContent: "center",
                         fontSize: 16,
-                        transition: "all 0.15s",
-                        flexShrink: 0
+                        flexShrink: 0,
+                        transform: isHover ? "rotate(180deg)" : "rotate(0deg)",
+                        transition: "all 0.5s ease"
                     }}>
                     ✕
                 </button>
