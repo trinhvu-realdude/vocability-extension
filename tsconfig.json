@@ -14,6 +14,8 @@
         "./*"
       ]
     },
-    "baseUrl": "."
+    "baseUrl": ".",
+    "types": ["chrome", "node"],
+    "ignoreDeprecations": "6.0"
   }
 }

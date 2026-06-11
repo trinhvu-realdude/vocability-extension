@@ -72,7 +72,7 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   return true // keep the message channel open for async response
 })
 
-async function handleMessage(msg: { type: string; [key: string]: any }) {
+async function handleMessage(msg: { type: string;[key: string]: any }) {
   switch (msg.type) {
     // ── Auth ──────────────────────────────────────────────────────────────────
 
@@ -199,15 +199,45 @@ async function handleMessage(msg: { type: string; [key: string]: any }) {
       } = await supabase.auth.getSession()
       if (!session) return { error: "not_authenticated" }
 
-      const { data, error } = await supabase
+      const uid = session.user.id
+
+      // 1. Get owned collections
+      const { data: ownedData, error: ownedError } = await supabase
         .from("collections")
         .select("id, name, color, language_id")
-        .eq("user_id", session.user.id)
+        .eq("user_id", uid)
         .eq("language_id", 1) // For now we only support English — can expand later
         .order("created_at", { ascending: false })
 
-      if (error) throw error
-      return { data: data ?? [] }
+      if (ownedError) throw ownedError
+
+      const ownedCollections = (ownedData ?? []).map((c: any) => ({ ...c, myRole: 'owner' }))
+
+      // 2. Get shared collections (where role is editor)
+      const { data: shareRows, error: shareError } = await supabase
+        .from("collection_shares")
+        .select("collection_id, role")
+        .eq("user_id", uid)
+        .eq("role", "editor")
+
+      if (shareError) throw shareError
+
+      let sharedCollections: any[] = []
+      if (shareRows && shareRows.length > 0) {
+        const collectionIds = shareRows.map((s: any) => s.collection_id)
+        const { data: sharedData, error: sharedError } = await supabase
+          .from("collections")
+          .select("id, name, color, language_id")
+          .in("id", collectionIds)
+          .eq("language_id", 1)
+          .order("created_at", { ascending: false })
+
+        if (sharedError) throw sharedError
+
+        sharedCollections = (sharedData ?? []).map((c: any) => ({ ...c, myRole: 'editor' }))
+      }
+
+      return { data: [...ownedCollections, ...sharedCollections] }
     }
 
     case "CREATE_COLLECTION": {
@@ -238,7 +268,7 @@ async function handleMessage(msg: { type: string; [key: string]: any }) {
       if (!session) return { error: "not_authenticated" }
 
       const { word, phonetic, part_of_speech, definitions, collection_id } =
-        msg as {
+        msg as unknown as {
           word: string
           phonetic?: string
           part_of_speech: string

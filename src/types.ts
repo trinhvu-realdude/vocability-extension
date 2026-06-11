@@ -16,6 +16,7 @@ export interface ExtCollection {
   name: string
   color: string
   language_id: number
+  myRole?: 'owner' | 'editor' | 'viewer'
 }
 
 // ─── Dictionary API Types ─────────────────────────────────────────────────────

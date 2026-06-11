@@ -40,6 +40,9 @@ export default function SaveForm({
     handleSave,
     defRef
 }: SaveFormProps) {
+    const myCollections = collections.filter((c) => c.myRole === 'owner' || !c.myRole)
+    const sharedCollections = collections.filter((c) => c.myRole === 'editor')
+
     return (
         <div>
             <div style={{ fontSize: 15, fontWeight: 700, color: C.text, marginBottom: 16, display: "flex", alignItems: "center", gap: 6 }}>
@@ -65,11 +68,24 @@ export default function SaveForm({
                                 backgroundPosition: "right 10px center",
                                 paddingRight: 28
                             }}>
-                            {collections.map((c) => (
-                                <option key={c.id} value={c.id} style={{ background: "#ffffff" }}>
-                                    {c.name}
-                                </option>
-                            ))}
+                            {myCollections.length > 0 && (
+                                <optgroup label="My Collections">
+                                    {myCollections.map((c) => (
+                                        <option key={c.id} value={c.id} style={{ background: "#ffffff" }}>
+                                            {c.name}
+                                        </option>
+                                    ))}
+                                </optgroup>
+                            )}
+                            {sharedCollections.length > 0 && (
+                                <optgroup label="Shared with Me">
+                                    {sharedCollections.map((c) => (
+                                        <option key={c.id} value={c.id} style={{ background: "#ffffff" }}>
+                                            {c.name} (Editor)
+                                        </option>
+                                    ))}
+                                </optgroup>
+                            )}
                         </select>
                         <button
                             onClick={() => setShowNewColl(true)}
