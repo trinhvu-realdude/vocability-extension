@@ -1,15 +1,22 @@
 {
   "name": "vocability-extension",
-  "displayName": "Vocability extension",
-  "version": "0.0.1",
-  "description": "A note-taking Vocability extension",
+  "displayName": "Vocability",
+  "version": "0.1.0",
+  "description": "Define and save vocabulary words from any webpage into your Vocability collections.",
   "author": "Trinh Vu. <trinhvu0204.work@gmail.com>",
   "scripts": {
     "dev": "plasmo dev",
+    "dev:chrome": "plasmo dev --target=chrome-mv3",
+    "dev:firefox": "plasmo dev --target=firefox-mv2",
+    "dev:edge": "plasmo dev --target=edge-mv3",
     "build": "plasmo build",
+    "build:chrome": "plasmo build --target=chrome-mv3",
+    "build:firefox": "plasmo build --target=firefox-mv2",
+    "build:edge": "plasmo build --target=edge-mv3",
     "package": "plasmo package"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.39.3",
     "plasmo": "0.90.5",
     "react": "18.2.0",
     "react-dom": "18.2.0"
@@ -26,6 +33,17 @@
   "manifest": {
     "host_permissions": [
       "https://*/*"
-    ]
+    ],
+    "permissions": [
+      "storage",
+      "identity",
+      "contextMenus",
+      "activeTab"
+    ],
+    "browser_specific_settings": {
+      "gecko": {
+        "id": "extension@vocability.com"
+      }
+    }
   }
 }
