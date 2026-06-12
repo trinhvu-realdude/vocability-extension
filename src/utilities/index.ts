@@ -95,3 +95,22 @@ export const panelStyle: React.CSSProperties = {
     overflowY: "auto",
     pointerEvents: "auto"
 }
+
+export const handleTextToSpeech = async (
+    text: string,
+) => {
+    const speech = new SpeechSynthesisUtterance();
+    speech.text = text;
+
+    // const voices = await getVoicesByLanguage(language);
+
+    // if (!selectedVoice) {
+    //     selectedVoice = voices.find((voice) => voice.default) || voices[0];
+    // }
+
+    // speech.voice = selectedVoice;
+
+    speech.lang = "en-US";
+
+    window.speechSynthesis.speak(speech);
+};

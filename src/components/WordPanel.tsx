@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react"
 import Spinner from "./Spinner"
 import type { DictEntry, DictMeaning, ExtCollection } from "~src/types"
-import { C, panelStyle, partColor, s } from "~src/utilities"
+import { C, handleTextToSpeech, panelStyle, partColor, s } from "~src/utilities"
 import vocabilityLogo from "data-base64:~assets/vocability.svg"
 import Toast from "./Toast"
 import SaveForm from "./SaveForm"
+import TextToSpeechButton from "./TextToSpeechButton"
 
 
 type PanelView = "loading" | "not_authenticated" | "ready" | "not_found" | "saving"
@@ -273,12 +274,11 @@ function WordPanel({ word, onClose, onToast }: WordPanelProps) {
                 {/* Ready with API data */}
                 {(view === "ready" || view === "saving") && entry && (
                     <>
-                        {/* Phonetic */}
-                        {getPhonetic(entry) && (
-                            <div style={{ color: C.textMuted, fontSize: 15, marginBottom: 16 }}>
-                                {getPhonetic(entry)}
-                            </div>
-                        )}
+                        {/* Phonetic and Text-to-Speech */}
+                        <div style={{ color: C.textMuted, fontSize: 15, marginBottom: 16, display: "flex", alignItems: "center", gap: 8 }}>
+                            {getPhonetic(entry) && (<span>{getPhonetic(entry)}</span>)}
+                            <TextToSpeechButton word={word} />
+                        </div>
 
                         {/* Meaning tabs */}
                         {entry.meanings.length > 1 && (
