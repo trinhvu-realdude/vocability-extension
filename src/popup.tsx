@@ -115,7 +115,7 @@ function IndexPopup() {
           </div> */}
 
           {/* OAuth redirect URL info */}
-          {redirectUrl && (
+          {/* {redirectUrl && (
             <div className="redirect-box">
               <div className="redirect-title">
                 <span>⚙️</span> Setup Required
@@ -126,7 +126,7 @@ function IndexPopup() {
               </div>
               <code className="redirect-url">{redirectUrl}</code>
             </div>
-          )}
+          )} */}
         </>
       )}
 
